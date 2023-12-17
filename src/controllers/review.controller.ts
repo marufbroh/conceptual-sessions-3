@@ -1,93 +1,75 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { reviewServices } from '../services/review.service'
+import sendSuccessResponse from '../utils/sendResponse'
 
-const createReview = async (req: Request, res: Response) => {
+const createReview = async (req: Request, res: Response, next: NewableFunction) => {
     try {
         const reviewData = req.body
         const result = await reviewServices.createReview(reviewData)
-        res.status(201).json({
-            status: 'success',
-            message: 'Review created successfully',
-            data: result,
+        sendSuccessResponse(res, {
+            statusCode: 200,
+            message: "Review created successfully",
+            data: result
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next();
     }
 }
 
-const getAllReviews = async (req: Request, res: Response) => {
+const getAllReviews = async (req: Request, res: Response, next: NewableFunction) => {
     try {
         const result = await reviewServices.getAllReviews()
-        res.status(200).json({
-            status: 'success',
-            message: 'Review fetched successfully',
-            data: result,
+        sendSuccessResponse(res, {
+            statusCode: 200,
+            message: "Review fetched successfully",
+            data: result
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next();
     }
 }
 
-const getSingleReview = async (req: Request, res: Response) => {
+const getSingleReview = async (req: Request, res: Response, next: NewableFunction) => {
     try {
         const id = req.params.id
         const result = await reviewServices.getSingleReview(id)
-        res.status(200).json({
-            status: 'success',
-            message: 'Single Review fetched successfully',
-            data: result,
+        sendSuccessResponse(res, {
+            statusCode: 200,
+            message: "Single Review fetched successfully",
+            data: result
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next();
     }
 }
 
-const updateReview = async (req: Request, res: Response) => {
+const updateReview = async (req: Request, res: Response, next: NewableFunction) => {
     try {
         const reviewData = req.body
         const id = req.params.id
         const result = await reviewServices.updateReview(id, reviewData)
-        res.status(200).json({
-            status: 'success',
-            message: 'Review updated successfully',
-            data: result,
+        sendSuccessResponse(res, {
+            statusCode: 200,
+            message: "Review updated successfully",
+            data: result
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next();
     }
 }
 
-const deleteReview = async (req: Request, res: Response) => {
+const deleteReview = async (req: Request, res: Response, next: NewableFunction) => {
     try {
         const id = req.params.id
         await reviewServices.deleteReview(id)
-        res.status(200).json({
-            status: 'success',
-            message: 'Review deleted successfully',
+        sendSuccessResponse(res, {
+            statusCode: 200,
+            message: "Review deleted successfully",
+            data: null
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next();
     }
 }
 
