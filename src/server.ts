@@ -1,20 +1,32 @@
-import app from "./app"
-import mongoose from "mongoose";
-import config from "./config";
+import { Server } from 'http';
+import app from './app';
+const port = process.env.PORT || 5000;
 
-async function server() {
+let server: Server;
+
+const startServer = async () => {
     try {
-        await mongoose.connect(config.database_url_local);
-
-        app.listen(config.port, () => {
-            console.log(`Example app listening on port ${config.port}`)
+        server = app.listen(port, () => {
+            console.log(`Server is running on port ${port}`);
         })
-
     } catch (error) {
         console.log(error);
     }
 }
 
+startServer();
 
+process.on('unhandledRejection', () => {
+    console.log(`😈 unhandledRejection is detected , shutting down ...`);
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
 
-server().catch(err => console.log(err));
+process.on('uncaughtException', () => {
+    console.log(`😈 uncaughtException is detected , shutting down ...`);
+    process.exit(1);
+});

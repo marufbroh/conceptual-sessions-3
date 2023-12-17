@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { tourServices } from '../services/tour.service'
 
 const createTour = async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ const createTour = async (req: Request, res: Response) => {
     }
 }
 
-const getAllTours = async (req: Request, res: Response) => {
+const getAllTours = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await tourServices.getAllTours()
         res.status(200).json({
@@ -29,11 +29,7 @@ const getAllTours = async (req: Request, res: Response) => {
             data: result,
         })
     } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            status: 'fail',
-            message: error.message || 'Something went wrong',
-        })
+        next(error)
     }
 }
 
