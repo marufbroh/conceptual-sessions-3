@@ -7,32 +7,19 @@ import { NextFunction, Request, Response } from "express";
 import { TErrorResponse } from "../types/TErrorResponse";
 import config from "../config";
 import mongoose from "mongoose";
+import errorPreproccesor from "../helpers/errorHelpers/errroPreprocessor";
 
 const globalErrorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
-    // const statusCode = error.statusCode || 500;
-    // const message = error.message || "Something went wrong";
-    // const status = error.status;
 
-    const errorResponse: TErrorResponse = {
+    let errorResponse: TErrorResponse = {
         statusCode: error.statusCode || 500,
         status: error.status || 'error',
         message: error.message || 'Something went wrong',
         issues: error.issues || [],
     }
 
-    if (error instanceof mongoose.Error.ValidationError) {
-        errorResponse.statusCode = 400
-        errorResponse.status = 'error'
-        errorResponse.message = 'Validation Error'
-        const errorValues = Object.values(error.errors);
+    errorResponse = errorPreproccesor(error);
 
-        errorValues.forEach((errObj) => {
-            errorResponse.issues.push({
-                path: errObj.path,
-                message: errObj.message
-            })
-        })
-    };
 
     res.status(errorResponse.statusCode).json({
         status: errorResponse.status,
