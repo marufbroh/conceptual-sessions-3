@@ -4,9 +4,16 @@ import { TErrorResponse } from "../../types/TErrorResponse";
 import handleValidationError from "./handleValidationError";
 import handleDuplicateError from "./handleDuplicateError";
 import handlerCastError from "./handlerCastError";
+import GenericError from "../../classes/errorClasses/GenericError";
+import handlerGenericError from "./handlerGenericError";
+import { ZodError } from "zod";
+import handleZodError from "./handleZodError";
 
 const errorPreproccesor = (error: any): TErrorResponse => {
-    if (error instanceof mongoose.Error.ValidationError) {
+    if (error instanceof ZodError) {
+        return handleZodError(error)
+    }
+    else if (error instanceof mongoose.Error.ValidationError) {
         return handleValidationError(error)
     }
     else if (error.code && error.code === 11000) {
@@ -14,6 +21,9 @@ const errorPreproccesor = (error: any): TErrorResponse => {
     }
     else if (error instanceof mongoose.Error.CastError) {
         return handlerCastError(error)
+    }
+    else if (error instanceof GenericError) {
+        return handlerGenericError(error)
     }
     else {
         return {
