@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { filter } from '../helpers/filterHelper'
+import { getQuery } from '../helpers/getQuery'
 import { ITour } from '../interfaces/tour.interface'
 import Tour from '../models/tour.model'
 import { TQueryObj } from '../types/TQueryObj'
@@ -13,26 +13,8 @@ const createTour = async (tourData: ITour): Promise<ITour> => {
 
 
 const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
-    const modelQuery = filter(Tour.find(), query);
-
-    if (query.searchTerm) {
-        const fieldValues = Object.values(modelQuery.model.schema.paths);
-        const searchableFields = fieldValues
-            .filter((fieldObj) => {
-                if (fieldObj.instance === "String") {
-                    return true;
-                }
-            })
-            .map((fieldObj) => ({
-                [fieldObj.path]: { $regex: query.searchTerm, $options: 'i' }
-            }))
-
-        modelQuery.find({
-            $or: searchableFields
-        });
-    }
-
-    return modelQuery
+    const result = await getQuery(Tour.find(), query);
+    return result;
 }
 
 const getSingleTour = async (id: string): Promise<ITour | null> => {
