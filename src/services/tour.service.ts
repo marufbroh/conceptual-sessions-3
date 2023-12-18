@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import GenericError from '../classes/errorClasses/GenericError'
+import { filter } from '../helpers/filterHelper'
 import { ITour } from '../interfaces/tour.interface'
 import Tour from '../models/tour.model'
+import { TQueryObj } from '../types/TQueryObj'
 
 const createTour = async (tourData: ITour): Promise<ITour> => {
     const result = await Tour.create(tourData)
@@ -9,9 +10,29 @@ const createTour = async (tourData: ITour): Promise<ITour> => {
     return result
 }
 
-const getAllTours = async (): Promise<ITour[]> => {
-    const result = await Tour.find()
-    return result
+
+
+const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
+    const modelQuery = filter(Tour.find(), query);
+
+    if (query.searchTerm) {
+        const fieldValues = Object.values(modelQuery.model.schema.paths);
+        const searchableFields = fieldValues
+            .filter((fieldObj) => {
+                if (fieldObj.instance === "String") {
+                    return true;
+                }
+            })
+            .map((fieldObj) => ({
+                [fieldObj.path]: { $regex: query.searchTerm, $options: 'i' }
+            }))
+
+        modelQuery.find({
+            $or: searchableFields
+        });
+    }
+
+    return modelQuery
 }
 
 const getSingleTour = async (id: string): Promise<ITour | null> => {
