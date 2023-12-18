@@ -1,10 +1,14 @@
 class GenericError extends Error {
-    public statusCode: number
+    public statusCode: number;
 
-    constructor(message: string, code: number) {
+    constructor(message: string, code: number, stack = '') {
         super(message)
         this.statusCode = code
-        Error.captureStackTrace(this, this.constructor)
+        if (stack) {
+            this.stack = stack;
+        } else {
+            Error.captureStackTrace(this, this.constructor);
+        }
     }
 }
 

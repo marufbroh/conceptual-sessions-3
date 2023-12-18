@@ -8,7 +8,7 @@ interface ITour {
     ratingAverage: number
     ratingQuantity: number
     price: number
-    availableSeats: number
+    availableSeats : number
     imageCover: string
     images: string[]
     createdAt: Date
@@ -16,7 +16,8 @@ interface ITour {
     startLocation: string
     locations: string[]
     slug: string
-}
+  }
+
 
 interface ITourMethods {
     getNextNearestStartDateAndEndDate(): {

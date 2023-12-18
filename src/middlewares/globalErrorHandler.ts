@@ -27,7 +27,7 @@ const globalErrorHandler = (error: any, req: Request, res: Response, next: NextF
         issues: errorResponse.issues,
         //only in NODE_ENV=development
         stack: config.node_env === 'development' ? error.stack : undefined,
-        error: error,
+        // error: error,
     })
 }
 

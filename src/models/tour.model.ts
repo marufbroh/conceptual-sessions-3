@@ -2,8 +2,6 @@ import { Schema, model } from "mongoose";
 import { ITour, ITourMethods, TTourModel } from "../interfaces/tour.interface";
 import slugify from "slugify"
 
-
-
 const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
     {
         name: {
@@ -11,6 +9,7 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
             required: [true, 'Please tell us your name'],
             unique: true
         },
+        //indexing
         durationHours: {
             type: Number,
             required: [true, 'Please tell us your durationHours'],
@@ -27,10 +26,6 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
             type: Number,
             required: [true, 'Please tell us your price'],
         },
-        availableSeats: {
-            type: Number,
-            required: [true, 'Please tell us your availableSeats'],
-        },
         imageCover: {
             type: String,
             required: [true, 'Please tell us your imageCover'],
@@ -45,14 +40,19 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
             type: String,
             required: [true, 'Please tell us your startLocation'],
         },
+        availableSeats: {
+            type: Number,
+            required: [true, 'Please tell us your availableSeats'],
+        },
         locations: [String],
         slug: String,
     },
     {
         toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-    }
+        toObject: { virtuals: true },
+    },
 )
+
 
 tourSchema.virtual("durationDays").get(function () {
     return this.durationHours / 24;

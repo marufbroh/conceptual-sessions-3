@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import GenericError from '../classes/errorClasses/GenericError'
 import { ITour } from '../interfaces/tour.interface'
 import Tour from '../models/tour.model'
 
