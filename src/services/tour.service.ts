@@ -10,8 +10,6 @@ const createTour = async (tourData: ITour): Promise<ITour> => {
     return result
 }
 
-
-
 const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
     const result = await getQuery(Tour.find(), query);
     return result;
