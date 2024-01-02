@@ -1,5 +1,6 @@
 import { Query, Schema, model } from "mongoose";
 import { IUser } from "../interfaces/user.interface";
+import { ACCOUNT_STATUS, USER_ROLE } from "../constants/user.constant";
 
 
 const userSchema = new Schema<IUser>({
@@ -28,13 +29,13 @@ const userSchema = new Schema<IUser>({
     photo: String,
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user',
+        enum: Object.values(USER_ROLE),
+        default: USER_ROLE.user,
     },
     userStatus: {
         type: String,
-        enum: ['active', 'inactive'],
-        default: 'active',
+        enum: Object.values(ACCOUNT_STATUS),
+        default: ACCOUNT_STATUS.active,
     },
 },
     {
