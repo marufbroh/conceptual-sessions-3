@@ -17,6 +17,14 @@ const userSchema = new Schema<IUser>({
         required: [true, 'Please tell us your email'],
         lowercase: true,
     },
+    password: {
+        type: String,
+        required: [true, 'Please tell us your password'],
+    },
+    passwordChangeAt: {
+        type: Date,
+        default: null
+    },
     photo: String,
     role: {
         type: String,
@@ -28,7 +36,10 @@ const userSchema = new Schema<IUser>({
         enum: ['active', 'inactive'],
         default: 'active',
     },
-});
+},
+    {
+        timestamps: true
+    });
 
 // pre hook for query middleware
 // userSchema.pre("find", function (next) {
