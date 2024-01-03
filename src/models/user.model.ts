@@ -21,6 +21,7 @@ const userSchema = new Schema<IUser>({
     password: {
         type: String,
         required: [true, 'Please tell us your password'],
+        select: 0
     },
     passwordChangeAt: {
         type: Date,
