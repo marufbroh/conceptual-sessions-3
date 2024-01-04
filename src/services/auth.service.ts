@@ -2,7 +2,7 @@ import { IUser } from "../interfaces/user.interface"
 import User from "../models/user.model"
 
 interface IRegister
-  extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> {}
+  extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
 
 const register = async (payload: IRegister) => {
   const password = payload.password
@@ -23,8 +23,8 @@ const register = async (payload: IRegister) => {
 
 
 export const authServices = {
-    register,
-    // login,
-    // changePassword,
-    // refreshToken,
-  }
+  register,
+  // login,
+  // changePassword,
+  // refreshToken,
+}
