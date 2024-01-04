@@ -1,8 +1,7 @@
 import { IUser } from "../interfaces/user.interface"
 import User from "../models/user.model"
 
-interface IRegister
-  extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
+interface IRegister extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
 
 const register = async (payload: IRegister) => {
   const password = payload.password
@@ -18,6 +17,62 @@ const register = async (payload: IRegister) => {
   })
 
   return result
+}
+
+
+const login = async (payload: ILogin) => {
+  //if the user exists
+  const user = await User.findOne({ email: payload.email }).select('+password')
+
+  if (!user) {
+    throw new Error('Invalid credentials')
+  }
+
+  const plainTextPassword = payload.password
+  const hashedPassword = user.password
+
+  const isCorrectPassword = await passwordHelpers.comparePassword(
+    plainTextPassword,
+    hashedPassword,
+  )
+  if (!isCorrectPassword) {
+    throw new Error('Invalid credentials')
+  }
+
+  //JWT - 3 Parts
+  //Header - Payload - Signature
+  //Header - Algorithm + Type
+  //Payload - Data ( email, role, userId, name)
+  //Signature - Secret Key
+
+  const jwtPayload: JwtPayload = {
+    email: user.email,
+    role: user.role,
+  }
+  // const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret, {
+  //   expiresIn: config.jwt_access_expires_in,
+  // })
+
+  const accessToken = jwtHelpers.createToken(
+    jwtPayload,
+    config.jwt_access_secret,
+    {
+      expiresIn: config.jwt_access_expires_in,
+    },
+  )
+
+  const refreshToken = jwtHelpers.createToken(
+    jwtPayload,
+    config.jwt_refresh_secret,
+    {
+      expiresIn: config.jwt_refresh_expires_in,
+    },
+  )
+
+  return {
+    accessToken,
+    refreshToken,
+  }
 }
 
 
