@@ -1,6 +1,8 @@
+import { JwtPayload } from "jsonwebtoken"
 import { passwordHelpers } from "../helpers/passwordHelpers"
 import { IUser } from "../interfaces/user.interface"
 import User from "../models/user.model"
+import { jwtHelpers } from "../helpers/jwtHelpers"
 
 interface IRegister extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
 
