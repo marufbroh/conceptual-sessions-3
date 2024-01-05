@@ -86,7 +86,7 @@ const login = async (payload: ILogin) => {
 
 export const authServices = {
   register,
-  // login,
+  login,
   // changePassword,
   // refreshToken,
 }

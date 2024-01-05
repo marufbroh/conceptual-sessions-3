@@ -31,7 +31,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
 
 export const authController = {
   register,
-  // login,
+  login,
   // changePassword,
   // refreshToken,
 }
