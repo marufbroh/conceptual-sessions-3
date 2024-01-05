@@ -1,3 +1,4 @@
+import { passwordHelpers } from "../helpers/passwordHelpers"
 import { IUser } from "../interfaces/user.interface"
 import User from "../models/user.model"
 
@@ -19,6 +20,10 @@ const register = async (payload: IRegister) => {
   return result
 }
 
+interface ILogin {
+  email: string
+  password: string
+}
 
 const login = async (payload: ILogin) => {
   //if the user exists
