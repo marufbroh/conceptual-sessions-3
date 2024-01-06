@@ -9,21 +9,21 @@ import User from "../models/user.model";
 const checkAuth = (...roles: Array<keyof typeof USER_ROLE>) => {
     // roles: ['user' | 'admin']
     // roles: ("user" | "admin")[]
-    console.log(roles)
+    // console.log(roles)
     return catchAsync(
         async (req: Request, res: Response, next: NextFunction) => {
             const token = req.headers.authorization
-            console.log(token)
+            // console.log(token)
 
             if (!token) {
                 throw new Error('Invalid token')
             }
 
-            // const decodedToken = jwt.verify(token, config.jwt_access_secret)
             const decodedToken = jwtHelpers.verifyToken(
                 token,
                 config.jwt_access_secret,
             )
+
             req.user = decodedToken as JwtPayload
 
             const { email } = decodedToken as JwtPayload

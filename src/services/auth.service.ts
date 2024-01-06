@@ -8,7 +8,7 @@ import config from "../config"
 interface IRegister extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
 
 const register = async (payload: IRegister) => {
-  const password = payload.password
+  const password = payload.password;
   //generates random bytes of 16 characters. Hexadecimal number
   //combined random bytes with password
   const hashedPassword = await passwordHelpers.hashPassword(password)
@@ -57,9 +57,6 @@ const login = async (payload: ILogin) => {
     email: user.email,
     role: user.role,
   }
-  // const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret, {
-  //   expiresIn: config.jwt_access_expires_in,
-  // })
 
   const accessToken = jwtHelpers.createToken(
     jwtPayload,
