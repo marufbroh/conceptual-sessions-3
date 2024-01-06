@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import catchAsync from "../utils/catchAsync"
 import sendSuccessResponse from "../utils/sendResponse"
 import { authServices } from "../services/auth.service"
+import config from "../config"
 
 const register = catchAsync(async (req: Request, res: Response) => {
   const result = await authServices.register(req.body)
@@ -29,9 +30,28 @@ const login = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+
+const changePassword = catchAsync(
+  async (req: Request, res: Response) => {
+    // const token = req.headers.authorization
+    // if (!token) {
+    //   throw new Error('Invalid token')
+    // }
+    // const decodedToken = jwtHelpers.verifyToken(token, config.jwt_access_secret)
+    const decodedToken = req.user
+    const result = await authServices.changePassword(decodedToken, req.body)
+
+    sendSuccessResponse(res, {
+      statusCode: 200,
+      message: 'Password changed successfully',
+      data: result,
+    })
+  },
+)
+
 export const authController = {
   register,
   login,
-  // changePassword,
+  changePassword,
   // refreshToken,
 }

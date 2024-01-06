@@ -81,10 +81,71 @@ const login = async (payload: ILogin) => {
 }
 
 
+// if the user is authorized to change password
+//old password, new password
+const changePassword = async (
+  decodedToken: JwtPayload,
+  payload: {
+    oldPassword: string
+    newPassword: string
+  },
+) => {
+  const { email, iat } = decodedToken
+  // console.log(iat, 'iat')
+
+  const user = await User.findOne({ email }).select('+password')
+
+  if (!user) {
+    throw new Error('Invalid credentials')
+  }
+
+  if (!iat) {
+    throw new Error('Invalid token')
+  }
+
+  console.log(user.passwordChangedAt, 'passwordChangedAt')
+  //token issued before password changed
+  //after the change of the change of the password, we should not allow the user to use the old token
+  if (user.passwordChangedAt && iat < user.passwordChangedAt.getTime() / 1000) {
+    throw new Error('Old token')
+  }
+
+  const isCorrectPassword = await passwordHelpers.comparePassword(
+    payload.oldPassword,
+    user.password,
+  )
+
+  if (!isCorrectPassword) {
+    throw new Error('Invalid credentials')
+  }
+
+  const hashedPassword = await passwordHelpers.hashPassword(payload.newPassword)
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      password: hashedPassword,
+      passwordChangedAt: new Date(),
+    },
+    {
+      new: true,
+    },
+  )
+
+  return updatedUser
+
+  //old token = token1
+  //old password = password1
+
+  //new password = password2
+  //old token = token1 -> invalid
+}
+
+
 
 export const authServices = {
   register,
   login,
-  // changePassword,
+  changePassword,
   // refreshToken,
 }
