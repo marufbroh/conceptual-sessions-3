@@ -3,6 +3,7 @@ import { passwordHelpers } from "../helpers/passwordHelpers"
 import { IUser } from "../interfaces/user.interface"
 import User from "../models/user.model"
 import { jwtHelpers } from "../helpers/jwtHelpers"
+import config from "../config"
 
 interface IRegister extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
 
