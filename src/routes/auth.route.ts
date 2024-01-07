@@ -13,6 +13,6 @@ router.patch(
   checkAuth(USER_ROLE.admin, USER_ROLE.user),
   authController.changePassword,
 )
-// router.post('/refresh-token', authController.refreshToken)
+router.post('/refresh-token', authController.refreshToken)
 
 export const authRoutes = router
