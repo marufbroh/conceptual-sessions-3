@@ -91,7 +91,6 @@ const changePassword = async (
   },
 ) => {
   const { email, iat } = decodedToken
-  // console.log(iat, 'iat')
 
   const user = await User.findOne({ email }).select('+password')
 
@@ -103,7 +102,7 @@ const changePassword = async (
     throw new Error('Invalid token')
   }
 
-  console.log(user.passwordChangedAt, 'passwordChangedAt')
+  // console.log(user.passwordChangedAt, 'passwordChangedAt')
   //token issued before password changed
   //after the change of the change of the password, we should not allow the user to use the old token
   if (user.passwordChangedAt && iat < user.passwordChangedAt.getTime() / 1000) {
@@ -142,10 +141,47 @@ const changePassword = async (
 }
 
 
+const refreshToken = async (refreshToken: string) => {
+  const decodedToken = jwtHelpers.verifyToken(
+    refreshToken,
+    config.jwt_refresh_secret,
+  )
+
+  const { email } = decodedToken as JwtPayload
+
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    throw new Error('Invalid token')
+  }
+
+  const jwtPayload: JwtPayload = {
+    email: user.email,
+    role: user.role,
+  }
+
+  const accessToken = jwtHelpers.createToken(
+    jwtPayload,
+    config.jwt_access_secret,
+    {
+      expiresIn: config.jwt_access_expires_in,
+    },
+  )
+
+  return {
+    accessToken,
+  }
+  //accessToken - 1d
+  //refreshToken - 30d
+  //after 1d, the user will be logged out
+  // after 1d , if the user is logged in and he is browsing the site, we will issue a new accessToken. So that the user will not be logged out
+}
+
+
 
 export const authServices = {
   register,
   login,
   changePassword,
-  // refreshToken,
+  refreshToken,
 }
