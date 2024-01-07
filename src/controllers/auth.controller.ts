@@ -49,9 +49,25 @@ const changePassword = catchAsync(
   },
 )
 
+
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken
+  if (!refreshToken) {
+    throw new Error('Invalid token')
+  }
+  const result = await authServices.refreshToken(refreshToken)
+
+  sendSuccessResponse(res, {
+    statusCode: 200,
+    message: 'Token refreshed successfully',
+    data: result,
+  })
+})
+
+
 export const authController = {
   register,
   login,
   changePassword,
-  // refreshToken,
+  refreshToken,
 }
