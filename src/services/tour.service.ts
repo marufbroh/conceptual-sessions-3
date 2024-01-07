@@ -5,51 +5,54 @@ import Tour from '../models/tour.model'
 import { TQueryObj } from '../types/TQueryObj'
 
 const createTour = async (tourData: ITour): Promise<ITour> => {
-    const result = await Tour.create(tourData)
+  const result = await Tour.create(tourData)
 
-    return result
+  return result
 }
 
 const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
-    const result = await getQuery(Tour.find(), query);
-    return result;
+  const result = await getQuery(Tour.find(), query)
+  return result
 }
 
 const getSingleTour = async (id: string): Promise<ITour | null> => {
-    const result = await Tour.findById(id).populate('reviews')
-    return result
+  const result = await Tour.findById(id).populate('reviews')
+  return result
 }
 
-const updateTour = async (id: string, tourData: ITour): Promise<ITour | null> => {
-    const result = await Tour.findByIdAndUpdate(id, tourData, {
-        new: true,
-        runValidators: true,
-    })
+const updateTour = async (
+  id: string,
+  tourData: ITour,
+): Promise<ITour | null> => {
+  const result = await Tour.findByIdAndUpdate(id, tourData, {
+    new: true,
+    runValidators: true,
+  })
 
-    return result
+  return result
 }
 
 const deleteTour = async (id: string): Promise<ITour | null> => {
-    const result = await Tour.findByIdAndDelete(id)
-    // const result = await Tour.findByIdAndUpdate(id, { isDeleted: true });
-    return result
+  const result = await Tour.findByIdAndDelete(id)
+  // const result = await Tour.findByIdAndUpdate(id, { isDeleted: true });
+  return result
 }
 
 const getNextSchedule = async (id: string): Promise<any> => {
-    const tour = await Tour.findById(id)
-    const nextSchedule = tour?.getNextNearestStartDateAndEndDate()
+  const tour = await Tour.findById(id)
+  const nextSchedule = tour?.getNextNearestStartDateAndEndDate()
 
-    return {
-        tour,
-        nextSchedule,
-    }
+  return {
+    tour,
+    nextSchedule,
+  }
 }
 
 export const tourServices = {
-    createTour,
-    getAllTours,
-    getSingleTour,
-    updateTour,
-    deleteTour,
-    getNextSchedule,
+  createTour,
+  getAllTours,
+  getSingleTour,
+  updateTour,
+  deleteTour,
+  getNextSchedule,
 }

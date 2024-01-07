@@ -1,14 +1,15 @@
-import { JwtPayload } from "jsonwebtoken"
-import { passwordHelpers } from "../helpers/passwordHelpers"
-import { IUser } from "../interfaces/user.interface"
-import User from "../models/user.model"
-import { jwtHelpers } from "../helpers/jwtHelpers"
-import config from "../config"
+import { JwtPayload } from 'jsonwebtoken'
+import config from '../config'
+import { jwtHelpers } from '../helpers/jwtHelpers'
+import { passwordHelpers } from '../helpers/passwordHelpers'
+import { IUser } from '../interfaces/user.interface'
+import User from '../models/user.model'
 
-interface IRegister extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> { }
+interface IRegister
+  extends Omit<IUser, 'userStatus' | 'role' | 'passwordChangedAt'> {}
 
 const register = async (payload: IRegister) => {
-  const password = payload.password;
+  const password = payload.password
   //generates random bytes of 16 characters. Hexadecimal number
   //combined random bytes with password
   const hashedPassword = await passwordHelpers.hashPassword(password)
@@ -80,7 +81,6 @@ const login = async (payload: ILogin) => {
   }
 }
 
-
 // if the user is authorized to change password
 //old password, new password
 const changePassword = async (
@@ -140,7 +140,6 @@ const changePassword = async (
   //old token = token1 -> invalid
 }
 
-
 const refreshToken = async (refreshToken: string) => {
   const decodedToken = jwtHelpers.verifyToken(
     refreshToken,
@@ -176,8 +175,6 @@ const refreshToken = async (refreshToken: string) => {
   //after 1d, the user will be logged out
   // after 1d , if the user is logged in and he is browsing the site, we will issue a new accessToken. So that the user will not be logged out
 }
-
-
 
 export const authServices = {
   register,

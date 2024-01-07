@@ -1,17 +1,17 @@
-import { Response } from "express";
+import { Response } from 'express'
 
 type TSuccessResponse<T> = {
-    statusCode: number;
-    message: string;
-    data: T | T[] | null;
+  statusCode: number
+  message: string
+  data: T | T[] | null
 }
 
 const sendSuccessResponse = <T>(res: Response, data: TSuccessResponse<T>) => {
-    res.status(data.statusCode).json({
-        status: 'Success',
-        message: data.message,
-        data: data.data,
-    })
+  res.status(data.statusCode).json({
+    status: 'Success',
+    message: data.message,
+    data: data.data,
+  })
 }
 
 export default sendSuccessResponse

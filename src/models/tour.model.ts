@@ -1,96 +1,95 @@
-import { Schema, model } from "mongoose";
-import { ITour, ITourMethods, TTourModel } from "../interfaces/tour.interface";
-import slugify from "slugify"
+import { Schema, model } from 'mongoose'
+import { ITour, ITourMethods, TTourModel } from '../interfaces/tour.interface'
+import slugify from 'slugify'
 
 const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
-    {
-        name: {
-            type: String,
-            required: [true, 'Please tell us your name'],
-            unique: true
-        },
-        //indexing
-        durationHours: {
-            type: Number,
-            required: [true, 'Please tell us your durationHours'],
-        },
-        ratingAverage: {
-            type: Number,
-            default: 4.5,
-        },
-        ratingQuantity: {
-            type: Number,
-            default: 0,
-        },
-        price: {
-            type: Number,
-            required: [true, 'Please tell us your price'],
-        },
-        imageCover: {
-            type: String,
-            required: [true, 'Please tell us your imageCover'],
-        },
-        images: [String],
-        createdAt: {
-            type: Date,
-            default: Date.now(),
-        },
-        startDates: [Date],
-        startLocation: {
-            type: String,
-            required: [true, 'Please tell us your startLocation'],
-        },
-        availableSeats: {
-            type: Number,
-            required: [true, 'Please tell us your availableSeats'],
-        },
-        locations: [String],
-        slug: String,
+  {
+    name: {
+      type: String,
+      required: [true, 'Please tell us your name'],
+      unique: true,
     },
-    {
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true },
+    //indexing
+    durationHours: {
+      type: Number,
+      required: [true, 'Please tell us your durationHours'],
     },
+    ratingAverage: {
+      type: Number,
+      default: 4.5,
+    },
+    ratingQuantity: {
+      type: Number,
+      default: 0,
+    },
+    price: {
+      type: Number,
+      required: [true, 'Please tell us your price'],
+    },
+    imageCover: {
+      type: String,
+      required: [true, 'Please tell us your imageCover'],
+    },
+    images: [String],
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    startDates: [Date],
+    startLocation: {
+      type: String,
+      required: [true, 'Please tell us your startLocation'],
+    },
+    availableSeats: {
+      type: Number,
+      required: [true, 'Please tell us your availableSeats'],
+    },
+    locations: [String],
+    slug: String,
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 )
 
-
-tourSchema.virtual("durationDays").get(function () {
-    return this.durationHours / 24;
+tourSchema.virtual('durationDays').get(function () {
+  return this.durationHours / 24
 })
 
 tourSchema.virtual('reviews', {
-    ref: 'Review',
-    foreignField: 'tour',
-    localField: '_id',
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 })
 
-tourSchema.pre("save", function () {
-    this.slug = slugify(this.name, { lower: true })
+tourSchema.pre('save', function () {
+  this.slug = slugify(this.name, { lower: true })
 })
 
 tourSchema.methods.getNextNearestStartDateAndEndDate = function (): {
-    nearestStartDate: Date | null
-    estimatedEndDate: Date | null
+  nearestStartDate: Date | null
+  estimatedEndDate: Date | null
 } {
-    const today = new Date()
-    const futureDates = this.startDates.filter((startDate: Date) => {
-        return startDate > today
-    })
-    //   65893905746394 - 4873843278478478
+  const today = new Date()
+  const futureDates = this.startDates.filter((startDate: Date) => {
+    return startDate > today
+  })
+  //   65893905746394 - 4873843278478478
 
-    futureDates.sort((a: Date, b: Date) => a.getTime() - b.getTime())
+  futureDates.sort((a: Date, b: Date) => a.getTime() - b.getTime())
 
-    const nearestStartDate = futureDates[0]
-    const estimatedEndDate = new Date(
-        nearestStartDate.getTime() + this.durationHours * 60 * 60 * 1000,
-    )
+  const nearestStartDate = futureDates[0]
+  const estimatedEndDate = new Date(
+    nearestStartDate.getTime() + this.durationHours * 60 * 60 * 1000,
+  )
 
-    return {
-        nearestStartDate,
-        estimatedEndDate,
-    }
+  return {
+    nearestStartDate,
+    estimatedEndDate,
+  }
 }
 
-const Tour = model<ITour, TTourModel>('Tour', tourSchema);
+const Tour = model<ITour, TTourModel>('Tour', tourSchema)
 
 export default Tour

@@ -1,11 +1,11 @@
 export type TErrorIssue = {
-    path: string | number
-    message: string
+  path: string | number
+  message: string
 }
 
 export type TErrorResponse = {
-    statusCode: number,
-    status: 'error' | 'fail',
-    message: string,
-    issues: TErrorIssue[];
+  statusCode: number
+  status: 'error' | 'fail'
+  message: string
+  issues: TErrorIssue[]
 }

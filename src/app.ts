@@ -1,32 +1,34 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express, { Application, NextFunction, Request, Response } from "express"
-import cors from "cors"
-import { userRoutes } from "./routes/user.route";
-import { tourRoutes } from "./routes/tour.route";
-import { reviewRoutes } from "./routes/review.route";
-import { dbConnect } from "./utils/dbConnect";
-import notFound from "./middlewares/notFound";
-import globalErrorHandler from "./middlewares/globalErrorHandler";
-import globalRoute from "./routes";
-const app: Application = express();
+import express, { Application, NextFunction, Request, Response } from 'express'
+import cors from 'cors'
+import { userRoutes } from './routes/user.route'
+import { tourRoutes } from './routes/tour.route'
+import { reviewRoutes } from './routes/review.route'
+import { dbConnect } from './utils/dbConnect'
+import notFound from './middlewares/notFound'
+import globalErrorHandler from './middlewares/globalErrorHandler'
+import globalRoute from './routes'
+import cookieParser from 'cookie-parser'
+const app: Application = express()
 
 // parsers
-app.use(express.json());
+app.use(express.json())
+app.use(cookieParser())
 app.use(cors())
 
 // connections
-dbConnect();
+dbConnect()
 
 // routes
-app.use('/api/v1', globalRoute);
+app.use('/api/v1', globalRoute)
 
 app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({
-        success: true,
-        message: "Welcome to Murir Tin Tours & Travels"
-    })
+  res.status(200).json({
+    success: true,
+    message: 'Welcome to Murir Tin Tours & Travels',
+  })
 })
 
 //catch all route - Trying to catch a Not Found Route
@@ -51,5 +53,4 @@ app.use(notFound)
 
 app.use(globalErrorHandler)
 
-export default app;
-
+export default app

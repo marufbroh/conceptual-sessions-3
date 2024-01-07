@@ -3,7 +3,6 @@ import checkAuth from '../middlewares/checkAuth'
 import { authController } from '../controllers/auth.controller'
 import { USER_ROLE } from '../constants/user.constant'
 
-
 const router = express.Router()
 
 router.post('/register', authController.register)

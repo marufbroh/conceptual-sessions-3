@@ -1,47 +1,48 @@
-import { Query, Schema, model } from "mongoose";
-import { IUser } from "../interfaces/user.interface";
-import { ACCOUNT_STATUS, USER_ROLE } from "../constants/user.constant";
+import { Query, Schema, model } from 'mongoose'
+import { IUser } from '../interfaces/user.interface'
+import { ACCOUNT_STATUS, USER_ROLE } from '../constants/user.constant'
 
-
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser>(
+  {
     name: {
-        type: String,
-        required: [true, 'Please tell us your name'],
+      type: String,
+      required: [true, 'Please tell us your name'],
     },
     age: {
-        type: Number,
-        required: [true, 'Please tell us your age'],
+      type: Number,
+      required: [true, 'Please tell us your age'],
     },
     email: {
-        type: String,
-        unique: true,
-        required: [true, 'Please tell us your email'],
-        lowercase: true,
+      type: String,
+      unique: true,
+      required: [true, 'Please tell us your email'],
+      lowercase: true,
     },
     password: {
-        type: String,
-        required: [true, 'Please tell us your password'],
-        select: 0
+      type: String,
+      required: [true, 'Please tell us your password'],
+      select: 0,
     },
     passwordChangedAt: {
-        type: Date,
-        default: null
+      type: Date,
+      default: null,
     },
     photo: String,
     role: {
-        type: String,
-        enum: Object.values(USER_ROLE),
-        default: USER_ROLE.user,
+      type: String,
+      enum: Object.values(USER_ROLE),
+      default: USER_ROLE.user,
     },
     userStatus: {
-        type: String,
-        enum: Object.values(ACCOUNT_STATUS),
-        default: ACCOUNT_STATUS.active,
+      type: String,
+      enum: Object.values(ACCOUNT_STATUS),
+      default: ACCOUNT_STATUS.active,
     },
-},
-    {
-        timestamps: true
-    });
+  },
+  {
+    timestamps: true,
+  },
+)
 
 // pre hook for query middleware
 // userSchema.pre("find", function (next) {
@@ -55,15 +56,15 @@ const userSchema = new Schema<IUser>({
 // })
 
 userSchema.pre(/^find/, function (this: Query<IUser, Document>, next) {
-    this.find({ userStatus: { $eq: 'active' } })
-    next()
+  this.find({ userStatus: { $eq: 'active' } })
+  next()
 })
 
-userSchema.pre("aggregate", function (next) {
-    this.pipeline().unshift({ $match: { userStatus: { $ne: "inactive" } } })
-    next()
+userSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { userStatus: { $ne: 'inactive' } } })
+  next()
 })
 
-const User = model<IUser>('User', userSchema);
+const User = model<IUser>('User', userSchema)
 
 export default User

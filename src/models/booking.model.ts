@@ -15,11 +15,11 @@ const bookingSchema = new Schema<IBooking>({
     required: [true, 'A booking must have bookedSlots'],
   },
   bookingStatus: {
-    type   : String,
+    type: String,
     enum: ['pending', 'paid', 'cancelled'],
     required: [true, 'A booking must have a bookingStatus'],
   },
-  
+
   price: {
     type: Number,
     required: [true, 'A booking must have a price'],

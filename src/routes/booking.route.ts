@@ -10,4 +10,4 @@ router.get('/:userId/get-all-bookings', bookingController.getAllBookingsOfUser)
 router.patch('/:id', bookingController.updateBooking)
 router.delete('/:id', bookingController.deleteBooking)
 
-export const bookingRoutes = router;
+export const bookingRoutes = router
